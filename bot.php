@@ -19,7 +19,11 @@ function sendMessage($chat_id, $message) {
     $ch = curl_init($url);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     curl_setopt($ch, CURLOPT_POSTFIELDS, $params);
-    curl_exec($ch);
+    $result = curl_exec($ch); // Добавлено сохранение результата выполнения запроса
+    if ($result === false) {
+        // Добавлено сообщение об ошибке, если запрос не удался
+        echo 'Ошибка отправки сообщения: ' . curl_error($ch);
+    }
     curl_close($ch);
 }
 
@@ -115,6 +119,10 @@ function generateChatGPTResponse($message) {
     curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
     curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
     $response = curl_exec($ch);
+    if ($response === false) {
+        // Добавлено сообщение об ошибке, если запрос не удался
+        echo 'Ошибка при получении ответа от ChatGPT: ' . curl_error($ch);
+    }
     curl_close($ch);
     return json_decode($response, true)['choices'][0]['text'];
 }
@@ -128,7 +136,11 @@ function setWebhook() {
     $ch = curl_init($url);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     curl_setopt($ch, CURLOPT_POSTFIELDS, $params);
-    curl_exec($ch);
+    $result = curl_exec($ch); // Добавлено сохранение результата выполнения запроса
+    if ($result === false) {
+        // Добавлено сообщение об ошибке, если запрос не удался
+        echo 'Ошибка установки веб-хука: ' . curl_error($ch);
+    }
     curl_close($ch);
 }
 
@@ -151,13 +163,14 @@ function processMessage($chat_id, $text) {
             processSend($chat_id);
             break;
         default:
-            // Проверяем, является ли сообщение ответом на вопрос о персонаже
-            // Например, если ожидается описание внешности, характера или любимых тем
-            // Обработка ответа может быть реализована здесь
+            if (strpos($text, '/') === false) {
+                // Обрабатываем общение с ChatGPT
+                $response = generateChatGPTResponse($text);
+                sendMessage($chat_id, $response);
+            }
             break;
     }
 }
-
 
 // Установка веб-хука при первом запуске скрипта
 setWebhook();
