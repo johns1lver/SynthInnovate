@@ -4,7 +4,7 @@
 define('BOT_TOKEN', '7096009018:AAGFK2B52--wkri2ZRBBUtff35wq66oA6XQ');
 
 // URL-адрес вашего веб-хука, куда будут отправляться обновления от Telegram
-define('WEBHOOK_URL', 'https://synthinnovate.000webhostapp.com/bot.php');
+define('WEBHOOK_URL', 'https://raw.githubusercontent.com/johns1lver/SynthInnovate/32e095a1ba56b242926555daa7db5b15b3320190/bot.php');
 
 // API ключ для ChatGPT
 define('CHATGPT_API_KEY', 'sk-proj-HKplGZi4SaJyMRODm6maT3BlbkFJCkqAJFZPphxLZDBf66lt');
